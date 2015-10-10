@@ -1,0 +1,51 @@
+clear all;
+close all;
+database_images={'harry_pic.jpg','harmoine.jpg','ron.jpg'};
+%Detect objects using Viola-Jones Algorithm
+
+%To detect Face
+FDetect = vision.CascadeObjectDetector;
+
+%Read the input image
+I = imread('harry2.jpe');
+
+%Returns Bounding Box values based on number of objects
+BB = step(FDetect,I);
+
+no_of_studs=size(BB,1);
+fprintf('no of studs in class %d',no_of_studs);
+
+% disp(BB);
+  queryImage = imread('ron.jpg');
+
+
+
+%Variable decs
+
+[data_rows,data_columns]=size(database_images);
+prob=zeros;
+
+
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
+
+for k=1:1:no_of_studs
+
+ queryROI=BB(k,:);
+crop=imcrop(queryImage,queryROI);
+
+for data_index=1:1:data_columns
+     
+prob(data_index)=imgcomp(ind2rgb(crop),database_images(data_index));
+   
+end
+[max_prob,index]=max(prob);
+if (max_prob>0.9999)    
+l=strrep(database_images(index(1)), '.jpe', '');
+% s=sprintf('%s is present',l);
+disp(l);
+else
+   disp('haha');
+end
+end
+
+
